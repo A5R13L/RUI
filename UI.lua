@@ -676,6 +676,8 @@ function Library:CreateWindow(Config, Parent)
                 function DropdownInit:SetOptions(Options)
                     if not Options then Options = OptionTable end
 
+                    print("Options", Options)
+                    
                     if type(Options) == "function" then
                         Options = Options()
                     end
@@ -715,7 +717,7 @@ function Library:CreateWindow(Config, Parent)
                     end
                 end
                 
-                DropdownInit:SetOptions(OptionsTable)
+                DropdownInit:SetOptions(OptionTable)
 
                 function DropdownInit:RemoveOption(Name)
                     for _, Option in pairs(Dropdown.Container.Holder.Container:GetChildren()) do
