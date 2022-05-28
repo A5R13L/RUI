@@ -349,10 +349,10 @@ function Library:CreateWindow(Config, Parent)
                 TextBox.Size = UDim2.new(1, -10, 0, TextBox.Title.TextBounds.Y + 25)
 
                 TextBox.Background.Input.FocusLost:Connect(function()
-                    if NumbersOnly and not tonumber(TextBox.Background.Input.Text) then
+                    if NumbersOnly and tonumber(TextBox.Background.Input.Text) ~= nil then
                         Callback(tonumber(TextBox.Background.Input.Text))
                         TextBox.Background.Input.Text = ""
-                    else
+                    elseif not NumbersOnly then
                         Callback(TextBox.Background.Input.Text)
                         TextBox.Background.Input.Text = ""
                     end
@@ -699,12 +699,8 @@ function Library:CreateWindow(Config, Parent)
                 end
 
                 function DropdownInit:SetOption(Name)
-                    for _, Option in pairs(Dropdown.Container.Holder.Container:GetChildren()) do
-                        if Option:IsA("TextButton") and string.find(Option.Name, Name) then
-                            Dropdown.Container.Value.Text = Option.Name
-                            Callback(Name)
-                        end
-                    end
+                    Dropdown.Container.Value.Text = Name
+                    Callback(Name)
                 end
 
                 function DropdownInit:RemoveOption(Name)
