@@ -672,6 +672,9 @@ function Library:CreateWindow(Config, Parent)
                     Option.MouseButton1Click:Connect(function()
                         Dropdown.Container.Value.Text = OptionName
                         Callback(OptionName)
+
+                        Dropdown.Size = UDim2.new(1, -10, 0, Dropdown.Title.TextBounds.Y + 25)
+                        Dropdown.Container.Holder.Visible = false
                     end)
                 end
 
