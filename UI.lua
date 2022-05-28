@@ -681,8 +681,12 @@ function Library:CreateWindow(Config, Parent)
                     if type(Options) == "function" then
                         Options = Options()
                     end
-
-                    Dropdown.Container.Holder.Container:ClearAllChildren()
+                    
+                    for _, Option in pairs(Dropdown.Container.Holder.Container:GetChildren()) do
+                        if Option:IsA("TextButton") then
+                            Option:Destroy()
+                        end
+                    end
 
                     for _, OptionName in pairs(Options) do
                         local Option = Folder.Option:Clone()
