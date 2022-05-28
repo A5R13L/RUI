@@ -351,10 +351,10 @@ function Library:CreateWindow(Config, Parent)
                 TextBox.Background.Input.FocusLost:Connect(function()
                     if NumbersOnly and not tonumber(TextBox.Background.Input.Text) then
                         Callback(tonumber(TextBox.Background.Input.Text))
-                        --TextBox.Background.Input.Text = ""
+                        TextBox.Background.Input.Text = ""
                     else
                         Callback(TextBox.Background.Input.Text)
-                        --TextBox.Background.Input.Text = ""
+                        TextBox.Background.Input.Text = ""
                     end
                 end)
 
