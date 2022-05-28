@@ -702,8 +702,10 @@ function Library:CreateWindow(Config, Parent)
                     return Dropdown.Container.Value.Text
                 end
 
-                function DropdownInit:SetOption(Name)
+                function DropdownInit:SetOption(Name, UseCallback)
                     Dropdown.Container.Value.Text = Name
+                    if not UseCallback then return end
+
                     Callback(Name)
                 end
 
@@ -730,7 +732,7 @@ function Library:CreateWindow(Config, Parent)
                 end
 
                 if InitialValue then
-                    DropdownInit:SetOption(InitialValue)
+                    DropdownInit:SetOption(InitialValue, false)
                 end
 
                 return DropdownInit
