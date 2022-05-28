@@ -433,7 +433,7 @@ function Library:CreateWindow(Config, Parent)
                     return ToggleState
                 end
 
-                function ToggleInit:CreateKeybind(Bind, Callback)
+                function ToggleInit:CreateKeybind(Bind, Callback, IgnoreState)
                     local KeybindInit = {}
                     Bind = Bind or "NONE"
                     local WaitingForBind = false
@@ -470,7 +470,7 @@ function Library:CreateWindow(Config, Parent)
                         elseif Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
 
-                            if Key == Selected then
+                            if Key == Selected and not IgnoreState then
                                 ToggleState = not ToggleState
                                 SetState(ToggleState)
 
