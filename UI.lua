@@ -486,8 +486,7 @@ function Library:CreateWindow(Config, Parent)
                     Library:AddSignal(UserInputService.InputEnded:Connect(function(Input)
                         if Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
-
-                            print(Key, Selected, "?", ToggleState)
+                            print("IE", Key, Selected, "?", ToggleState)
                                     
                             if Key == Selected and ToggleState then
                                 if Callback then
