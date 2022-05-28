@@ -648,7 +648,11 @@ function Library:CreateWindow(Config, Parent)
                     end
                 end)
 
-                for _, OptionName in pairs(type(OptionTable) == "table" and OptionTable or OptionTable()) do
+                if type(OptionTable) == "function" then
+                    OptionTable = OptionTable()
+                end
+                
+                for _, OptionName in pairs(OptionTable) do
                     local Option = Folder.Option:Clone()
                     Option.Name = OptionName
                     Option.Parent = Dropdown.Container.Holder.Container
