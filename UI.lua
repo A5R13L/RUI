@@ -633,6 +633,7 @@ function Library:CreateWindow(Config, Parent)
                 Dropdown.Title.Size = UDim2.new(1, 0, 0, Dropdown.Title.TextBounds.Y + 5)
                 Dropdown.Container.Position = UDim2.new(0, 0, 0, Dropdown.Title.TextBounds.Y + 5)
                 Dropdown.Size = UDim2.new(1, -10, 0, Dropdown.Title.TextBounds.Y + 25)
+                DropdownInit.__Dropdown = Dropdown
                 local DropdownToggle = false
 
                 Dropdown.MouseButton1Click:Connect(function()
