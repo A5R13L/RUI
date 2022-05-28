@@ -454,7 +454,7 @@ function Library:CreateWindow(Config, Parent)
                         Toggle.Title.Size = UDim2.new(1, -Toggle.Keybind.Size.X.Offset - 15, 1, 0)
                     end)
 
-                    UserInputService.InputBegan:Connect(function(Input)
+                    Library:AddSignal(UserInputService.InputBegan:Connect(function(Input)
                         if WaitingForBind and Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
 
@@ -470,16 +470,30 @@ function Library:CreateWindow(Config, Parent)
                         elseif Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
 
-                            if Key == Selected and not IgnoreState then
-                                ToggleState = not ToggleState
-                                SetState(ToggleState)
+                            if Key == Selected then
+                                if not IgnoreState then
+                                    ToggleState = not ToggleState
+                                    SetState(ToggleState)
+                                end
 
                                 if Callback then
-                                    Callback(Key)
+                                    Callback(Key, true)
                                 end
                             end
                         end
-                    end)
+                    end))
+
+                    Library:AddSignal(UserInputService.InputEnded:Connect(function(Input)
+                        if Input.UserInputType == Enum.UserInputType.Keyboard then
+                            local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
+
+                            if Key == Selected and ToggleState then
+                                if Callback then
+                                    Callback(Key, false)
+                                end
+                            end
+                        end
+                    end))
 
                     function KeybindInit:SetBind(Key)
                         Toggle.Keybind.Text = "[ " .. Key .. " ]"
