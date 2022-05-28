@@ -455,8 +455,6 @@ function Library:CreateWindow(Config, Parent)
                     end)
 
                     Library:AddSignal(UserInputService.InputBegan:Connect(function(Input)
-                        print("InputBegan", Input)
-
                         if WaitingForBind and Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
 
@@ -486,10 +484,10 @@ function Library:CreateWindow(Config, Parent)
                     end))
 
                     Library:AddSignal(UserInputService.InputEnded:Connect(function(Input)
-                        print("InputEnded", Input)
-
                         if Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
+
+                            print(Key, Selected, "?", ToggleState)
                                     
                             if Key == Selected and ToggleState then
                                 if Callback then
