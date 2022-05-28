@@ -673,6 +673,8 @@ function Library:CreateWindow(Config, Parent)
                         Dropdown.Container.Value.Text = OptionName
                         Callback(OptionName)
 
+                        print("OPTION CLICK")
+                        DropdownToggle = false
                         Dropdown.Size = UDim2.new(1, -10, 0, Dropdown.Title.TextBounds.Y + 25)
                         Dropdown.Container.Holder.Visible = false
                     end)
