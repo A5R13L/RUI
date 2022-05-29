@@ -676,8 +676,6 @@ function Library:CreateWindow(Config, Parent)
                 function DropdownInit:SetOptions(Options)
                     if not Options then Options = OptionTable end
 
-                    print("Options", Options)
-                    
                     if type(Options) == "function" then
                         Options = Options()
                     end
