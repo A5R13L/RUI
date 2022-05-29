@@ -510,7 +510,7 @@ function Library:CreateWindow(Config, Parent)
                 return ToggleInit
             end
 
-            function SectionInit:CreateSlider(Name, Min, Max, Default, Precise, Callback)
+            function SectionInit:CreateSlider(Name, Min, Max, Default, Precise, Callback, OddOnly)
                 local DefaultLocal = Default or 50
                 local SliderInit = {}
                 local Slider = Folder.Slider:Clone()
@@ -532,6 +532,15 @@ function Library:CreateWindow(Config, Parent)
                     local SliderPrecise = ((Position.X.Scale * Max) / Max) * (Max - Min) + Min
                     local SliderNonPrecise = math.floor(((Position.X.Scale * Max) / Max) * (Max - Min) + Min)
                     local SliderValue = Precise and SliderNonPrecise or SliderPrecise
+                    
+                    if OddOnly and SliderValue % 2 == 0 then
+                        SliderValue = SliderValue + 1
+                    
+                        if SliderValue > Max then
+                            SliderValue = SliderValue - 1
+                        end
+                    end
+                    
                     SliderValue = tonumber(string.format("%.2f", SliderValue))
                     GlobalSliderValue = SliderValue
                     Slider.Value.PlaceholderText = tostring(SliderValue)
