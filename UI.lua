@@ -9,6 +9,8 @@ local Library = {
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
+local TextService = game:GetService("TextService")
+local CoreGUI = game:GetService("CoreGUI")
 
 function Library:Create(Class, Options)
     if type(Class) == "string" then
@@ -72,7 +74,94 @@ local function MakeDraggable(ClickObject, Object)
     end))
 end
 
-function Library:CreateWindow(Config, Parent)
+Library.NotificationDock = Library:Create("Frame", {
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0, 20, 0, 20),
+    Size = UDim2.new(0, 300, 0, 200),
+    ZIndex = 100
+})
+
+if syn and syn.protect_gui then
+    syn.protect_gui(Library.NotificationDock)
+end
+
+Library.NotificationDock.Parent = CoreGUI
+
+Library:Create("UIListLayout", {
+    Padding = UDim.new(0, 4),
+    FillDirection = Enum.FillDirection.Vertical,
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Parent = Library.NotificationDock
+})
+
+function Library:TextSize(Text, Font, Size)
+    return TextService:GetTextSize(Text, Size, Font, Vector2.new(1920, 1080))
+end
+
+function Library:Notify(Text, Time)
+    local Size = self:TextSize(Text, Enum.Font.Code, 14)
+
+    local Outer = self:Create("Frame", {
+        BorderColor3 = Color3.new(0, 0, 0),
+        Position = UDim2.new(0, 100, 0, 10),
+        Size = UDim2.new(0, 0, 0, 20),
+        ClipDescendants = true,
+        ZIndex = 100,
+        Parent = self.NotificationDock
+    })
+
+    local Inner = self:Create("Frame", {
+        BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+        BorderColor3 = Color3.new(0, 0, 0),
+        BorderMode = Enum.BorderMode.Inset,
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 101,
+        Parent = Outer
+    })
+
+    local Frame = self:Create("Frame", {
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 1, 0, 1),
+        Size = UDim2.new(1, -2, 1, -2),
+        ZIndex = 102,
+        Parent = Inner
+    })
+
+    self:Create("UIGradient", {
+        Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)), ColorSequenceKeypoint.new(1, Color3.fromRGB(52, 52, 52))}),
+        Rotation = -90,
+        Parent = Frame
+    })
+
+    local Label = self:Create("TextLabel", {
+        BackgroundTransparency = 1,
+        Font = Enum.Font.Code,
+        TextColor3 = Color3.new(0.8, 0.8, 0.8),
+        TextSize = 16,
+        TextStrokeTransparency = 0
+    })
+
+    local LeftColor = self:Create("Frame", {
+        BackgroundColor3 = Color3.fromRGB(0, 150, 255),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, -1, 0, -1),
+        Size = UDim2.new(0, 3, 1, 2),
+        ZIndex = 104,
+        Parent = Outer
+    })
+
+    Outer:TweenSize(UDim2.new(0, Size.x + 8 + 4, 0, 20), "Out", "Quad", 0.4, true)
+
+    task.spawn(function()
+        wait(Time or 5)
+        Outer:TweenSize(UDim2.new(0, 0, 0, 20), "Out", "Quad", 0.4, true)
+        wait(0.4)
+        Outer:Destroy()
+    end)
+end
+
+function Library:CreateWindow(Config)
     local WindowInit = {}
     local Folder = game:GetObjects("rbxassetid://7141683860")[1]
     local Screen = Folder.Bracket:Clone()
@@ -87,7 +176,7 @@ function Library:CreateWindow(Config, Parent)
     end
 
     Screen.Name = HttpService:GenerateGUID(false)
-    Screen.Parent = Parent
+    Screen.Parent = CoreGUI
     Topbar.WindowName.Text = Config.WindowName
     MakeDraggable(Topbar, Main)
 
@@ -486,7 +575,7 @@ function Library:CreateWindow(Config, Parent)
                     Library:AddSignal(UserInputService.InputEnded:Connect(function(Input)
                         if Input.UserInputType == Enum.UserInputType.Keyboard then
                             local Key = tostring(Input.KeyCode):gsub("Enum.KeyCode.", "")
-                                    
+
                             if Key == Selected then
                                 if Callback then
                                     Callback(Key, false)
@@ -532,15 +621,15 @@ function Library:CreateWindow(Config, Parent)
                     local SliderPrecise = ((Position.X.Scale * Max) / Max) * (Max - Min) + Min
                     local SliderNonPrecise = math.floor(((Position.X.Scale * Max) / Max) * (Max - Min) + Min)
                     local SliderValue = Precise and SliderNonPrecise or SliderPrecise
-                    
+
                     if OddOnly and SliderValue % 2 == 0 then
                         SliderValue = SliderValue + 1
-                    
+
                         if SliderValue > Max then
                             SliderValue = SliderValue - 1
                         end
                     end
-                    
+
                     SliderValue = tonumber(string.format("%.2f", SliderValue))
                     GlobalSliderValue = SliderValue
                     Slider.Value.PlaceholderText = tostring(SliderValue)
@@ -678,17 +767,18 @@ function Library:CreateWindow(Config, Parent)
                 function DropdownInit:SetOption(Name, UseCallback)
                     Dropdown.Container.Value.Text = Name
                     if not UseCallback then return end
-
                     Callback(Name)
                 end
 
                 function DropdownInit:SetOptions(Options)
-                    if not Options then Options = OptionTable end
+                    if not Options then
+                        Options = OptionTable
+                    end
 
                     if type(Options) == "function" then
                         Options = Options()
                     end
-                    
+
                     for _, Option in pairs(Dropdown.Container.Holder.Container:GetChildren()) do
                         if Option:IsA("TextButton") then
                             Option:Destroy()
@@ -720,14 +810,13 @@ function Library:CreateWindow(Config, Parent)
                         Option.MouseButton1Click:Connect(function()
                             Dropdown.Container.Value.Text = OptionName
                             Callback(OptionName)
-
                             DropdownToggle = false
                             Dropdown.Size = UDim2.new(1, -10, 0, Dropdown.Title.TextBounds.Y + 25)
                             Dropdown.Container.Holder.Visible = false
                         end)
                     end
                 end
-                
+
                 DropdownInit:SetOptions(OptionTable)
 
                 function DropdownInit:RemoveOption(Name)
