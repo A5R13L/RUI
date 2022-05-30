@@ -10,7 +10,7 @@ local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local TextService = game:GetService("TextService")
-local CoreGUI = game:GetService("CoreGUI")
+local CoreGui = game:GetService("CoreGui")
 
 function Library:Create(Class, Options)
     if type(Class) == "string" then
@@ -85,7 +85,7 @@ if syn and syn.protect_gui then
     syn.protect_gui(Library.NotificationDock)
 end
 
-Library.NotificationDock.Parent = CoreGUI
+Library.NotificationDock.Parent = CoreGui
 
 Library:Create("UIListLayout", {
     Padding = UDim.new(0, 4),
@@ -176,7 +176,7 @@ function Library:CreateWindow(Config)
     end
 
     Screen.Name = HttpService:GenerateGUID(false)
-    Screen.Parent = CoreGUI
+    Screen.Parent = CoreGui
     Topbar.WindowName.Text = Config.WindowName
     MakeDraggable(Topbar, Main)
 
